@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Tennis Drills</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f2f3ef;
+      --surface: #ffffff;
+      --surface-2: #e9ebe5;
+      --ink: #101511;
+      --muted: #5d665e;
+      --line: #d6dad3;
+      --accent: #d8ff35;
+      --accent-ink: #172000;
+      --court: #2e6a58;
+      --court-line: #f3f3db;
+      --blue: #2d62d0;
+      --danger: #b74c38;
+      --shadow: 0 14px 38px rgba(23, 34, 25, .09);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101311;
+        --surface: #191e1a;
+        --surface-2: #232a24;
+        --ink: #f5f7ef;
+        --muted: #aeb7ae;
+        --line: #333c35;
+        --accent: #d8ff35;
+        --accent-ink: #172000;
+        --court: #275e4f;
+        --court-line: #f0f2db;
+        --blue: #82a7ff;
+        --danger: #ef8d78;
+        --shadow: 0 18px 44px rgba(0, 0, 0, .28);
+      }
+    }
+
+    html[data-theme="dark"] {
+      --bg: #101311; --surface: #191e1a; --surface-2: #232a24; --ink: #f5f7ef;
+      --muted: #aeb7ae; --line: #333c35; --accent: #d8ff35; --accent-ink: #172000;
+      --court: #275e4f; --court-line: #f0f2db; --shadow: 0 18px 44px rgba(0,0,0,.28);
+    }
+    html[data-theme="light"] {
+      --bg: #f2f3ef; --surface: #ffffff; --surface-2: #e9ebe5; --ink: #101511;
+      --muted: #5d665e; --line: #d6dad3; --accent: #d8ff35; --accent-ink: #172000;
+      --court: #2e6a58; --court-line: #f3f3db; --shadow: 0 14px 38px rgba(23,34,25,.09);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 0; }
+    body {
+      margin: 0;
+      min-width: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    .app {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) 16px calc(112px + env(safe-area-inset-bottom));
+    }
+    .utility {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .app-title {
+      font: 800 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .08em;
+    }
+    .context {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .theme-toggle svg { width: 17px; height: 17px; }
+    .card {
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+    .card-head { padding: 22px 20px 18px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .tag.primary { background: var(--accent); color: var(--accent-ink); }
+    h1 {
+      margin: 0;
+      max-width: 620px;
+      font-size: clamp(31px, 7vw, 48px);
+      line-height: .98;
+      letter-spacing: -.045em;
+      font-weight: 700;
+    }
+    .goal {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.48;
+    }
+    .court-wrap { padding: 0 12px; }
+    .court {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.55;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--court);
+    }
+    .court svg { display: block; width: 100%; height: 100%; }
+    .court .court-line { stroke: var(--court-line); stroke-width: 2.2; fill: none; vector-effect: non-scaling-stroke; }
+    .court .net { stroke: #17251f; stroke-width: 4; vector-effect: non-scaling-stroke; }
+    .court .arrow { stroke: var(--accent); stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .court .return-arrow { stroke: #f6b65e; }
+    .court .player { fill: var(--accent); stroke: #172000; stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .court .partner { fill: #f7f8ef; stroke: #172000; stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .court .target { fill: rgba(216,255,53,.18); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
+    .court-key {
+      position: absolute;
+      left: 12px;
+      bottom: 10px;
+      display: flex;
+      gap: 10px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(9, 20, 16, .72);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      backdrop-filter: blur(4px);
+    }
+    .court-key span { display: flex; align-items: center; gap: 4px; }
+    .key-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .key-dot.white { background: white; }
+    .details { padding: 18px 20px 22px; }
+    .detail-block + .detail-block { margin-top: 20px; }
+    h2 {
+      margin: 0 0 9px;
+      font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .steps { list-style: none; margin: 0; padding: 0; counter-reset: steps; }
+    .steps li {
+      counter-increment: steps;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 10px;
+      font-size: 15px;
+      line-height: 1.42;
+    }
+    .steps li + li { margin-top: 9px; }
+    .steps li::before {
+      content: counter(steps);
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      color: var(--muted);
+      font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .scorebox {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .scorebox strong { display: block; font-size: 15px; line-height: 1.25; }
+    .scorebox span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.3; }
+    .score-mark {
+      font: 600 18px ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--accent-ink);
+      background: var(--accent);
+      padding: 9px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+      justify-self: start;
+    }
+    .cue {
+      margin: 0;
+      padding-left: 13px;
+      border-left: 3px solid var(--accent);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .actions {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 8;
+      width: min(calc(100% - 32px), 728px);
+      transform: translateX(-50%);
+      padding: 12px 0 max(10px, env(safe-area-inset-bottom));
+      background: linear-gradient(to top, var(--bg) 78%, transparent);
+    }
+    .shuffle {
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(95, 122, 0, .2);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .shuffle:active { transform: translateY(1px); }
+    .shuffle svg { width: 21px; height: 21px; }
+    .count { margin: 2px 0 0; text-align: center; color: var(--muted); font-size: 12px; }
+    .filters { margin-bottom: 12px; }
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .chip {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 3px;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .chip.active { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+    .empty { display: none; padding: 40px 22px; text-align: center; }
+    .empty strong { display: block; font-size: 20px; }
+    .empty p { margin: 7px auto 16px; max-width: 360px; color: var(--muted); }
+    .reset { border: 0; border-radius: 999px; padding: 10px 14px; background: var(--surface-2); color: var(--ink); font-weight: 700; cursor: pointer; }
+    .flash { animation: flash .24s ease both; }
+    @keyframes flash { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+    @media (min-width: 680px) {
+      .app { padding-left: 22px; padding-right: 22px; }
+      .card-head, .details { padding-left: 28px; padding-right: 28px; }
+      .court-wrap { padding-left: 20px; padding-right: 20px; }
+      .details { display: grid; grid-template-columns: 1.25fr .75fr; gap: 22px 34px; }
+      .chips { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+      .chip { font-size: 11px; }
+      .detail-block + .detail-block { margin-top: 0; }
+      .detail-block.pattern { grid-row: span 2; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="utility">
+      <div><div class="app-title">TENNIS DRILLS</div><div class="context" id="contextText">2 players · 20 min</div></div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Use dark mode" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.5 14.5A8 8 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/></svg>
+      </button>
+    </header>
+
+    <nav class="filters" aria-label="Filter drills by category">
+      <div class="chips" id="focusChips"></div>
+    </nav>
+
+    <article class="card" id="drillCard">
+      <div id="drillContent">
+        <header class="card-head">
+          <div class="meta" id="tags"></div>
+          <h1 id="drillName"></h1>
+          <p class="goal" id="goal"></p>
+        </header>
+        <div class="court-wrap">
+          <div class="court" aria-label="Court diagram showing the drill pattern">
+            <svg id="courtSvg" viewBox="0 0 620 400" role="img" aria-labelledby="courtTitle courtDesc">
+              <title id="courtTitle">Drill court diagram</title>
+              <desc id="courtDesc">Players, targets, and ball directions for this drill.</desc>
+              <defs>
+                <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#d8ff35"/></marker>
+                <marker id="returnHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f6b65e"/></marker>
+              </defs>
+              <rect x="92" y="26" width="436" height="348" class="court-line"/>
+              <line x1="92" y1="200" x2="528" y2="200" class="net"/>
+              <line x1="174" y1="26" x2="174" y2="374" class="court-line"/>
+              <line x1="446" y1="26" x2="446" y2="374" class="court-line"/>
+              <line x1="174" y1="112" x2="446" y2="112" class="court-line"/>
+              <line x1="174" y1="288" x2="446" y2="288" class="court-line"/>
+              <line x1="310" y1="112" x2="310" y2="288" class="court-line"/>
+              <g id="diagram"></g>
+            </svg>
+            <div class="court-key" aria-hidden="true"><span><i class="key-dot"></i>You</span><span><i class="key-dot white"></i>Partner</span></div>
+          </div>
+        </div>
+        <div class="details">
+          <section class="detail-block pattern">
+            <h2>Setup</h2>
+            <ol class="steps" id="setupSteps"></ol>
+            <h2 style="margin-top:20px">Run it</h2>
+            <ol class="steps" id="steps"></ol>
+          </section>
+          <section class="detail-block">
+            <h2>Score it</h2>
+            <div class="scorebox"><div><strong id="scoreTitle"></strong><span id="scoreText"></span></div><div class="score-mark" id="scoreMark"></div></div>
+          </section>
+          <section class="detail-block">
+            <h2>Coach's cue</h2>
+            <p class="cue" id="cue"></p>
+          </section>
+        </div>
+      </div>
+      <div class="empty" id="emptyState">
+        <strong>No drills match</strong>
+        <p>Widen the filters and you'll be back on court.</p>
+        <button class="reset" id="resetFilters" type="button">Reset filters</button>
+      </div>
+    </article>
+
+    <div class="actions">
+      <button class="shuffle" id="shuffle" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        Shuffle drill
+      </button>
+      <p class="count" id="countLabel"></p>
+    </div>
+  </main>
+
+  <script>
+    const baseDrills = [
+      {name:'Crosscourt Lock',focus:'Forehand',family:'cross',goal:'Build a heavy, repeatable crosscourt ball that pushes your partner outside the singles line.',steps:['Both players start on the deuce side and rally only crosscourt.','Recover behind the outside ball after every shot; no camping in the alley.','After 8 clean balls, the next short ball is live and either player may attack.'],score:['First to 7','Win 1 point for reaching 8; win 2 for taking the live ball.'],cue:'Finish high, clear the net by a safe window, and make the bounce do the damage.'},
+      {name:'Backhand Lock',focus:'Backhand',family:'crossBack',goal:'Own the backhand diagonal with height, depth, and disciplined recovery.',steps:['Start a cooperative backhand-to-backhand rally from behind the baseline.','Keep every neutral ball beyond the service line.','At ball 10, play the point out using the full singles court.'],score:['Race to 8','1 point for ten clean balls; bonus point for winning the live point.'],cue:'Set the outside foot early and send the racquet through the target—not across your body.'},
+      {name:'Inside-Out + Open Court',focus:'Forehand',family:'insideOut',goal:'Use the inside-out forehand to create space, then finish behind the opening.',steps:['Partner feeds to your backhand corner. Run around and hit inside-out.','Partner replies crosscourt; redirect the next ball inside-in to the open court.','Reset after the two-ball pattern, then switch roles after 6 reps.'],score:['12-ball set','Earn 1 for a deep first ball and 1 for landing the finish in the target.'],cue:'Create space with your feet before you swing. Keep the inside-out ball heavy, not rushed.'},
+      {name:'Two Cross, One Line',focus:'Groundstrokes',family:'twoOne',goal:'Change direction only after you have built control and earned the line.',steps:['Rally two balls crosscourt from one diagonal.','On the third ball, the hitter changes direction down the line.','Play the point out. Alternate who makes the change each sequence.'],score:['First to 10','The changer scores only if the line ball lands beyond the service line.'],cue:'Change direction from a balanced ball. If you are stretched, restart the pattern instead of forcing it.'},
+      {name:'Serve + First Forehand',focus:'Serve',family:'servePlus',goal:'Connect serve location to the first attacking forehand instead of admiring the serve.',steps:['Serve wide from the deuce court. Partner blocks the return through the middle.','Recover inside the baseline and drive the first forehand to the open backhand corner.','Play out the point, then repeat from the ad court with a T serve.'],score:['10 serves each','2 points for serve plus forehand; 1 if only the serve hits its target.'],cue:'Land, split, and read. The first forehand begins before the return crosses the net.'},
+      {name:'Return Through the Middle',focus:'Return',family:'return',goal:'Neutralize first serves with depth and remove the server’s angle.',steps:['Server hits first serves from either side.','Returner drives or blocks every return into the deep middle target.','Play the point out only when the return lands beyond the service line.'],score:['15 returns','1 point for deep middle; 2 if the returner also wins the live point.'],cue:'Shorten the backswing, keep your head still, and send the ball high over the lowest part of the net.'},
+      {name:'Approach + Two Volleys',focus:'Volley',family:'approach',goal:'Close the net in stages and finish with positioning, not panic.',steps:['Partner feeds a short ball. Hit the approach down the line.','Split near the service line and play the first volley deep through the middle.','Close again and direct the second volley into the open court.'],score:['Best of 11','Approacher must win with two volleys to score; passer scores on any pass.'],cue:'The approach chooses your lane. The first volley earns the finish; it does not need to be the finish.'},
+      {name:'Reflex Volley Box',focus:'Volley',family:'volley',goal:'Sharpen compact hands and reaction speed in tight exchanges.',steps:['Both players begin one step inside their service lines.','Volley cooperatively through the middle for four contacts.','After four, either player can change direction and the point is live.'],score:['First to 9','Win by two; balls that bounce are lost points.'],cue:'Keep the racquet head in front and let the feet find the ball. No backswing.'},
+      {name:'Lob, Chase, Reset',focus:'Defense',family:'lob',goal:'Turn a defensive lob into a neutral rally with composed recovery.',steps:['Attacker starts at net; defender starts behind the baseline.','Defender sends a topspin or slice lob over the attacker.','Attacker chases, retrieves safely, and both players play out the point.'],score:['8 reps each','Defender gets 2 for a clean lob winner, 1 for reaching neutral.'],cue:'Lift from the legs and choose height before speed. Give yourself time to recover.'},
+      {name:'Short Ball Decision',focus:'Transition',family:'approach',goal:'Read ball height early and choose attack, approach, or reset with discipline.',steps:['Partner feeds alternating deep and short balls at random.','Call “go” before the bounce on an attackable short ball.','Approach to the safer lane, close, and play the point out.'],score:['First to 10','1 for the correct decision; another for winning after a “go” call.'],cue:'Move forward because of the ball you received, not because you planned to attack before the feed.'},
+      {name:'Moonball Step-In',focus:'Timing',family:'moon',goal:'Take time away from a high, deep ball without losing shape.',steps:['Partner feeds looping balls beyond the service line.','Alternate taking one on the rise and one at shoulder height.','After six controlled contacts, play one live point.'],score:['3 rounds each','Score a round for five of six balls landing deep.'],cue:'Move through the bounce. On the rise, shorten the swing; at shoulder height, create space.'},
+      {name:'Slice Change-Up',focus:'Backhand',family:'slice',goal:'Use the backhand slice to vary height, buy time, and force a low contact.',steps:['Rally backhand crosscourt. Every third backhand must be a slice.','The partner must answer the slice with another crosscourt ball.','After two successful cycles, the point becomes live.'],score:['First to 7','Only score after completing both topspin-to-slice cycles.'],cue:'Keep the slice low with a long path through the ball; do not chop down at it.'},
+      {name:'Deep–Short–Deep',focus:'Control',family:'depth',goal:'Change court position with intentional depth rather than random pace.',steps:['Feed one deep ball, then one short ball, then another deep ball.','Hitter recovers behind the baseline, moves inside, then retreats with crossover steps.','Complete the three-ball pattern before playing one live point.'],score:['10 patterns','1 point for all three targets; bonus for winning the live ball.'],cue:'Recover immediately after contact. The work between shots is the drill.'},
+      {name:'Serve Target Ladder',focus:'Serve',family:'serve',goal:'Build command of wide, body, and T locations under light pressure.',steps:['Hit two serves wide, two body, then two T from the deuce side.','Repeat the ladder from the ad side.','A miss repeats that target before you can move on.'],score:['Beat 24 serves','Finish all 12 targets in fewer than 24 total serves.'],cue:'Keep one service rhythm and change only the toss placement and racquet path needed for the target.'},
+      {name:'Second-Serve Pressure',focus:'Serve',family:'serve',goal:'Trust shape and racquet speed on the second serve when the score matters.',steps:['Play only second-serve points, starting each at 30–30.','Server gets one serve; a double fault loses the game immediately.','Play a full service game, then switch server.'],score:['Best of 5 games','Normal game scoring; track double faults separately.'],cue:'Swing up and through with commitment. Pressure is not a reason to guide the ball.'},
+      {name:'Return + One',focus:'Return',family:'returnPlus',goal:'Make the return and first rally ball function as one pattern.',steps:['Server begins with a second serve. Returner drives crosscourt.','Server replies crosscourt; returner redirects the next ball behind the server.','Play out the point after the three-ball sequence.'],score:['First to 11','Returner earns 2 by completing the pattern; server earns 1 by breaking it.'],cue:'Recover as the return leaves your strings. Expect the next ball instead of watching the first.'},
+      {name:'Pass or Dip',focus:'Passing',family:'pass',goal:'Choose between the clean passing lane and a low ball at the volleyer’s feet.',steps:['Attacker starts at the service line; defender starts at the baseline.','Partner feeds the defender a neutral ball and closes.','Defender calls “pass” or “dip” before contact, then plays the point out.'],score:['First to 8','Defender scores only when the called option is executed.'],cue:'A dipping crosscourt ball is often the higher-percentage first pass. Make the volleyer hit up.'},
+      {name:'Overhead Recovery',focus:'Overhead',family:'overhead',goal:'Move back safely, create space, and place the overhead before recovering.',steps:['Start near the service line. Partner sends a playable lob.','Turn, crossover, and hit the overhead to the designated target.','Recover forward for one closing volley fed by the partner.'],score:['10 feeds','2 points for overhead plus volley; 1 for the overhead target only.'],cue:'Turn before you retreat. Keep the ball in front and choose placement over a wild finish.'},
+      {name:'Figure-8 Rally',focus:'Movement',family:'figure8',goal:'Train directional control and recovery across both diagonals.',steps:['Player A hits every ball crosscourt. Player B hits every ball down the line.','The ball traces a figure eight across the court.','Reach 12 clean contacts, rest, then reverse roles.'],score:['3 clean rounds','A round counts only after 12 consecutive balls.'],cue:'Recover according to your next responsibility, not automatically to the center hash.'},
+      {name:'Twenty-Ball Discipline',focus:'Consistency',family:'cross',goal:'Hold depth, margin, and emotional control through a long neutral exchange.',steps:['Rally full court with no winners allowed for the first 20 balls.','Every ball must clear the net safely and land beyond the service line.','Ball 21 makes the point live.'],score:['First to 5','Win one point for reaching 20 and one more for winning the live rally.'],cue:'Reset your feet and intention every shot. Twenty good decisions beat one spectacular swing.'},
+      {name:'Attack the Middle',focus:'Doubles',family:'doubles',goal:'Create indecision between two opponents and close the center of the net.',steps:['Play two-up versus two-back from a cooperative feed.','The baseline team works through the middle for the first three balls.','After three, the point is live anywhere. Rotate positions every 4 points.'],score:['First team to 11','Middle contact or forced error is worth 2; all other points worth 1.'],cue:'Aim between the net players’ inside shoulders and move forward together behind a strong ball.'},
+      {name:'Poach on the Cue',focus:'Doubles',family:'poach',goal:'Time the poach from the returner’s setup rather than guessing early.',steps:['Server begins from the deuce side with partner at net.','Net player watches the returner and goes when the shoulders commit crosscourt.','Play the point out; rotate all four positions after 6 serves.'],score:['6 serves per role','Poacher gets 2 for clean contact, 1 for forcing a miss.'],cue:'Split as the returner hits, then cross decisively. Half a poach opens both lanes.'},
+      {name:'Wide Ball Recovery',focus:'Defense',family:'wide',goal:'Defend outside the singles line and recover without over-running the middle.',steps:['Partner feeds wide to either corner at random.','Defender sends a high, deep crosscourt ball and recovers with crossover steps.','On the next feed, play the point live.'],score:['First to 9','Defender earns 1 for neutralizing and 1 more for winning the live point.'],cue:'Give the ball height and time. Recover to the likely reply, not blindly to the center mark.'},
+      {name:'Drop Shot + Lob',focus:'Touch',family:'dropLob',goal:'Pair soft hands with a clear read of the opponent’s forward movement.',steps:['Start in a neutral baseline rally.','After four balls, Player A hits a drop shot; Player B runs forward.','Player A must lob the next ball; then play the point out. Switch every 5 reps.'],score:['First to 7','Pattern player scores only after executing both touch shots in court.'],cue:'Use the same preparation as a drive. Disguise comes before softness.'},
+      {name:'Baseline 11',focus:'Points',family:'points',goal:'Compete with structure: build, recognize the short ball, and finish.',steps:['Start every point with a cooperative crosscourt feed.','The first four shots stay crosscourt.','After four, play the singles point live anywhere.'],score:['Play to 11','A clean winner after the build is worth 2; all other points are worth 1.'],cue:'Do not rush the unlock. Use the first four balls to earn court position.'},
+      {name:'Neutral, Build, Finish',focus:'Patterns',family:'twoOne',goal:'Recognize the three phases of a point and match the ball to each phase.',steps:['Ball 1 is neutral: high and deep through the middle.','Ball 2 builds: heavy crosscourt beyond the service line.','Ball 3 finishes or approaches into the open court; then play live.'],score:['12 sequences','Earn one point for each phase executed correctly; target 24 of 36.'],cue:'The ball tells you the phase. A neutral ball cannot be forced into a finish.'},
+      {name:'No-Man’s-Land Escape',focus:'Movement',family:'depth',goal:'React to an awkward mid-court contact and choose forward or back quickly.',steps:['Start on the service line. Partner feeds randomly deep or short.','On deep feeds, retreat and rally crosscourt; on short feeds, move through and approach.','Play the point live after your first contact.'],score:['First to 10','1 point for the right movement choice; 1 more for winning.'],cue:'Read height and depth before the bounce. Your first step decides whether the contact feels rushed.'},
+      {name:'Mini-Tennis Shape',focus:'Feel',family:'mini',goal:'Warm the hands while preserving spin, spacing, and full technical intent.',steps:['Both players stand just behind the service line.','Rally crosscourt with topspin, keeping the ball inside the service boxes.','After 12 clean balls, back up two steps and repeat.'],score:['3 distances','Complete 12 at each distance without a miss.'],cue:'Small court does not mean tiny mechanics. Use the legs and finish the stroke.'},
+      {name:'Volley Direction Change',focus:'Volley',family:'volley',goal:'Control the racquet face while redirecting pace at net.',steps:['Both players start at the service line and volley crosscourt twice.','On the third volley, change direction down the line.','Reset and alternate who changes direction.'],score:['First to 8','The direction-changer scores only if the third volley lands deep.'],cue:'Set the face early and move through the line of the ball. Direction comes from the shoulder turn.'},
+      {name:'Body-Serve Jam',focus:'Serve',family:'servePlus',goal:'Use the body serve to force a cramped return and own the next ball.',steps:['Serve at the returner’s hitting-side hip.','Returner blocks crosscourt; server attacks the next ball behind the returner.','Play out the point after the serve-plus-one pattern.'],score:['12 points each','Server gets 2 for a jammed return and pattern finish, 1 for either.'],cue:'Body is a precise target, not the middle of the box. Commit to the hip.'},
+      {name:'Ad-Side Pressure',focus:'Points',family:'points',goal:'Rehearse the highest-leverage patterns at 30–30 and deuce.',steps:['Begin every game at 30–30 with a chosen server.','Play the game normally, but call serve target before each point.','Switch server after the game, regardless of result.'],score:['Best of 7 games','Standard scoring; note first-serve points won after each game.'],cue:'Use a clear routine between points. Pressure should narrow your decision, not speed it up.'}
+    ];
+
+    const variants = [
+      {label:'Foundation',level:'Foundation',time:15,setup:'Use large target zones and begin with a cooperative feed.',run:'Complete the pattern at 70% pace before the scoring phase.',score:'A clean pattern earns 1; target 8.' ,suffix:'Foundation'},
+      {label:'Direction',level:'Intermediate',time:20,setup:'Mark one crosscourt and one line target with cones.',run:'Complete the base pattern, then change direction on the called ball.',score:'Correct pattern and target earns 2; first to 12.',suffix:'Direction'},
+      {label:'Pressure',level:'Advanced',time:20,setup:'Begin each repetition at 30–30 on the scoreboard.',run:'Play the pattern into a live point; a pattern miss loses the point.',score:'Play six pressure games; win four.',suffix:'Pressure'},
+      {label:'Clutch',level:'Elite',time:25,setup:'Use regulation targets and one ball per repetition.',run:'Call the intended finish before the feed, then execute at match pace.',score:'Best of 9; final repetition is worth 2.',suffix:'Clutch'},
+      {label:'Precision',level:'Foundation',time:15,setup:'Place two racquets as a generous landing window.',run:'Keep full shape while directing every pattern ball into the window.',score:'Three clean targets in a row completes a set; win 3 sets.',suffix:'Precision'},
+      {label:'Tempo',level:'Intermediate',time:20,setup:'Set a 20-second recovery clock and alternate feeder roles.',run:'Start the next repetition on the clock while preserving full footwork.',score:'1 per clean rep; lose 1 for missing the clock; first to 10.',suffix:'Tempo'},
+      {label:'First strike',level:'Advanced',time:20,setup:'Start the hitter one step behind the baseline.',run:'Use the pattern to earn an inside-baseline contact, then attack.',score:'2 for winning inside four shots; 1 for winning later; first to 11.',suffix:'First Strike'},
+      {label:'Scoreboard',level:'Elite',time:25,setup:'Play a tiebreak beginning at 4–4 and call the pattern before each point.',run:'The first two shots must follow the base pattern; then the court opens.',score:'Play three tiebreaks to 7, win by 2.',suffix:'Scoreboard'}
+    ];
+
+    const diagrams = {
+      cross:[['p',175,340],['o',445,60],['t',365,38,145,56],['a',188,320,413,88],['r',432,80,205,313]],
+      crossBack:[['p',445,340],['o',175,60],['t',110,38,145,56],['a',432,320,207,88],['r',188,80,415,313]],
+      insideOut:[['p',420,340],['o',310,60],['t',360,38,150,60],['a',408,320,410,92],['r',396,92,180,315]],
+      twoOne:[['p',175,340],['o',445,60],['t',365,38,145,56],['t',110,38,70,56],['a',188,320,413,88],['r',432,80,205,313],['a',205,313,145,88]],
+      servePlus:[['p',420,354],['o',300,48],['t',174,112,136,88],['t',365,38,145,56],['a',410,337,222,145],['r',238,145,390,310]],
+      serve:[['p',420,354],['o',300,48],['t',174,112,136,88],['t',310,112,136,88],['a',410,337,250,150]],
+      return:[['p',185,350],['o',420,48],['t',240,288,140,78],['a',410,63,212,322],['r',205,322,400,92]],
+      returnPlus:[['p',185,350],['o',420,48],['t',110,38,145,56],['a',410,63,205,322],['r',205,322,407,90]],
+      approach:[['p',225,338],['o',400,55],['t',310,38,200,62],['a',230,318,390,90]],
+      volley:[['p',225,250],['o',395,150],['a',240,235,375,165],['r',375,165,248,230]],
+      lob:[['p',310,340],['o',310,150],['t',174,38,272,60],['a',310,320,310,75]],
+      moon:[['p',310,340],['o',310,60],['t',174,288,272,72],['a',310,85,310,305]],
+      slice:[['p',445,340],['o',175,60],['t',110,38,145,56],['a',430,320,205,90],['r',195,85,412,312]],
+      depth:[['p',310,340],['o',310,60],['t',174,38,272,62],['t',220,112,180,88],['a',310,85,310,315]],
+      pass:[['p',180,340],['o',360,150],['t',365,38,145,56],['a',190,320,438,88]],
+      overhead:[['p',310,155],['o',310,340],['t',174,38,272,62],['a',310,320,310,85]],
+      figure8:[['p',175,340],['o',445,60],['a',188,320,410,88],['r',430,85,430,312],['a',430,312,205,88],['r',190,85,188,320]],
+      doubles:[['p',230,145],['p',390,145],['o',230,340],['o',390,340],['t',275,288,70,75],['a',230,320,310,220]],
+      poach:[['p',225,350],['p',395,150],['o',390,350],['o',225,55],['a',220,330,245,90],['r',245,90,380,145]],
+      wide:[['p',120,340],['o',310,60],['t',365,38,145,56],['a',130,320,430,85]],
+      dropLob:[['p',310,340],['o',310,60],['t',250,112,120,75],['a',310,320,310,160],['r',310,150,310,315]],
+      points:[['p',175,340],['o',445,60],['a',188,320,413,88],['r',432,80,205,313]],
+      mini:[['p',220,270],['o',400,130],['t',174,112,272,176],['a',235,255,380,145]]
+    };
+
+    const categoryFor = focus => ({
+      Forehand:'Forehand', Backhand:'Backhand', Serve:'Serve', Return:'Return',
+      Volley:'Volley', Overhead:'Volley', Doubles:'Doubles', Points:'Point Play', Patterns:'Point Play',
+      Movement:'Footwork', Defense:'Footwork', Transition:'Footwork', Timing:'Footwork',
+      Groundstrokes:'Forehand', Passing:'Point Play', Touch:'Point Play', Control:'Footwork',
+      Consistency:'Point Play', Feel:'Footwork'
+    }[focus] || 'Point Play');
+    const drills = baseDrills.flatMap((base, bi) => variants.map((v, vi) => ({
+      ...base, id:`${bi}-${vi}`, category:categoryFor(base.focus), level:v.level,
+      players: base.focus === 'Doubles' ? 4 : 2,
+      name: vi === 0 ? base.name : `${base.name}: ${v.suffix}`, time:v.time, variant:v.label,
+      setup:[base.steps[0], v.setup], steps:[...base.steps.slice(1), v.run],
+      score:[base.score[0], v.score]
+    })));
+
+    let activeFocus = 'All';
+        let currentId = null;
+    let recent = [];
+
+    const $ = id => document.getElementById(id);
+    const focusOptions = ['All','Forehand','Backhand','Serve','Return','Volley','Footwork','Point Play','Doubles'];
+
+    function makeChips(container, options, type) {
+      container.innerHTML = options.map(o => `<button class="chip ${o === 'All' ? 'active' : ''}" type="button" data-${type}="${o}">${o}</button>`).join('');
+      container.addEventListener('click', e => {
+        const button = e.target.closest('.chip'); if (!button) return;
+        container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        button.classList.add('active');
+        activeFocus = button.dataset.focus;
+        shuffle(true);
+      });
+    }
+
+    function matches(d) {
+      return activeFocus === 'All' || d.category === activeFocus;
+    }
+
+    function randomFrom(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+    function shuffle(fromFilter = false) {
+      const pool = drills.filter(matches);
+      $('countLabel').textContent = `${pool.length} drills in this rotation`;
+      if (!pool.length) {
+        $('drillContent').style.display = 'none';
+        $('emptyState').style.display = 'block';
+        return;
+      }
+      $('drillContent').style.display = '';
+      $('emptyState').style.display = 'none';
+      let candidates = pool.filter(d => d.id !== currentId && !recent.includes(d.id));
+      if (!candidates.length) candidates = pool.filter(d => d.id !== currentId);
+      if (!candidates.length) candidates = pool;
+      const next = randomFrom(candidates);
+      currentId = next.id;
+      recent = [next.id, ...recent].slice(0, Math.min(8, pool.length - 1));
+      render(next);
+      if (!fromFilter) {
+        $('drillContent').classList.remove('flash');
+        void $('drillContent').offsetWidth;
+        $('drillContent').classList.add('flash');
+      }
+    }
+
+    function render(d) {
+      $('contextText').textContent = `${d.players} players · ${d.time} min`;
+      $('tags').innerHTML = `<span class="tag primary">${d.category}</span><span class="tag">${d.level}</span><span class="tag">${d.players} players</span>`;
+      $('drillName').textContent = d.name;
+      $('goal').textContent = d.goal;
+      $('setupSteps').innerHTML = d.setup.map(s => `<li>${s}</li>`).join('');
+      $('steps').innerHTML = d.steps.map(s => `<li>${s}</li>`).join('');
+      $('scoreTitle').textContent = d.score[0];
+      $('scoreText').textContent = d.score[1];
+      $('scoreMark').textContent = d.score[0].replace('First to ','→ ').replace('Race to ','→ ').replace('Best of ','× ');
+      $('cue').textContent = d.cue;
+      $('courtDesc').textContent = `Court diagram for ${d.name}, showing the player, partner, targets, and ball directions.`;
+      renderDiagram(d.family);
+    }
+
+    function renderDiagram(family) {
+      const items = diagrams[family] || diagrams.cross;
+      $('diagram').innerHTML = items.map(item => {
+        const [type,...n] = item;
+        if (type === 'p') return `<circle cx="${n[0]}" cy="${n[1]}" r="10" class="player"/><circle cx="${n[0]}" cy="${n[1]-17}" r="5" class="player"/>`;
+        if (type === 'o') return `<circle cx="${n[0]}" cy="${n[1]}" r="10" class="partner"/><circle cx="${n[0]}" cy="${n[1]-17}" r="5" class="partner"/>`;
+        if (type === 't') return `<rect x="${n[0]}" y="${n[1]}" width="${n[2]}" height="${n[3]}" rx="8" class="target"/>`;
+        const ret = type === 'r';
+        return `<path d="M${n[0]} ${n[1]} Q${(n[0]+n[2])/2 + (ret?-22:22)} ${(n[1]+n[3])/2} ${n[2]} ${n[3]}" class="arrow ${ret?'return-arrow':''}" marker-end="url(#${ret?'returnHead':'arrowHead'})"/>`;
+      }).join('');
+    }
+
+    $('themeToggle').addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      $('themeToggle').setAttribute('aria-label', next === 'dark' ? 'Use light mode' : 'Use dark mode');
+    });
+    $('shuffle').addEventListener('click', () => shuffle(false));
+    $('resetFilters').addEventListener('click', () => {
+      activeFocus = 'All';
+      document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.textContent === 'All'));
+      shuffle(true);
+    });
+    makeChips($('focusChips'), focusOptions, 'focus');
+    shuffle(true);
+  </script>
+</body>
+</html>
